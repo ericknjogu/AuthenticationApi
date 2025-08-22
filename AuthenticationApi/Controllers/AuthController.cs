@@ -52,6 +52,8 @@ namespace AuthenticationApi.Controllers
             _db.Users.Update(existingUser);
             await _db.SaveChangesAsync();
             return Ok(new { message = "Password updated successfully.", UserId = existingUser.Id, Username = existingUser.UserName });
-        }   
+        }
+
+
     }
 }
