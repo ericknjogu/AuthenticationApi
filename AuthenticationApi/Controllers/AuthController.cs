@@ -31,5 +31,27 @@ namespace AuthenticationApi.Controllers
             }
             return Ok(new { message="Login successful.",UserId=existingUser.Id, Username=existingUser.UserName });
         }
+
+        [HttpPut("updatePass/{Username}")]
+        public async Task<IActionResult> UpdatePassword(string Username,[FromBody] UpdatePassword dto)
+        {
+            if ( string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(dto.NewPassword))
+            {
+                return BadRequest("Invalid user data.");
+            }
+            var existingUser = await _db.Users.FirstOrDefaultAsync(u => u.UserName == Username);
+
+            if (existingUser == null)
+            {
+                return NotFound("User not found.");
+            }
+
+
+            existingUser.Password = dto.NewPassword;
+
+            _db.Users.Update(existingUser);
+            await _db.SaveChangesAsync();
+            return Ok(new { message = "Password updated successfully.", UserId = existingUser.Id, Username = existingUser.UserName });
+        }   
     }
 }
